@@ -45,6 +45,17 @@ public class WashingMachineTest {
     }
 
     @Test
+    public void testifLaudryHasFinshedWithSuccess() {
+        laundryBatch = LaundryBatch.builder()
+                                   .withWeightKg(5)
+                                   .withType(Material.COTTON)
+                                   .build();
+        LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
+
+        assertThat(laundryStatus.getResult(), Matchers.equalTo(Result.SUCCESS));
+    }
+
+    @Test
     public void itCompiles() {
         assertThat(true, Matchers.equalTo(true));
     }
