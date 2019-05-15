@@ -53,6 +53,19 @@ public class WashingMachineTest {
     }
 
     @Test
+    public void testIfLaudryIsTooHeavyForWoolMaterial() {
+        laundryBatch = LaundryBatch.builder()
+                                   .withWeightKg(5)
+                                   .withType(Material.WOOL)
+                                   .build();
+
+        LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
+
+        assertThat(laundryStatus.getResult(), Matchers.equalTo(Result.FAILURE));
+        assertThat(laundryStatus.getErrorCode(), Matchers.equalTo(ErrorCode.TOO_HEAVY));
+    }
+
+    @Test
     public void testifLaudryHasFinshedWithSuccess() {
         LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
 
