@@ -32,6 +32,11 @@ public class WashingMachineTest {
                                                    .withProgram(Program.SHORT)
                                                    .withSpin(true)
                                                    .build();
+
+        laundryBatch = LaundryBatch.builder()
+                                   .withWeightKg(5)
+                                   .withType(Material.COTTON)
+                                   .build();
     }
 
     @Test
@@ -49,10 +54,6 @@ public class WashingMachineTest {
 
     @Test
     public void testifLaudryHasFinshedWithSuccess() {
-        laundryBatch = LaundryBatch.builder()
-                                   .withWeightKg(5)
-                                   .withType(Material.COTTON)
-                                   .build();
         LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
 
         assertThat(laundryStatus.getResult(), Matchers.equalTo(Result.SUCCESS));
@@ -60,10 +61,6 @@ public class WashingMachineTest {
 
     @Test
     public void testIfEngineWasCalledOnce() {
-        laundryBatch = LaundryBatch.builder()
-                                   .withWeightKg(5)
-                                   .withType(Material.COTTON)
-                                   .build();
         washingMachine.start(laundryBatch, programConfiguration);
 
         verify(engine).runWashing(any(Integer.class));
@@ -71,10 +68,6 @@ public class WashingMachineTest {
 
     @Test
     public void testIfEngineWasCalledOnceForSpinMode() {
-        laundryBatch = LaundryBatch.builder()
-                                   .withWeightKg(5)
-                                   .withType(Material.COTTON)
-                                   .build();
         washingMachine.start(laundryBatch, programConfiguration);
 
         verify(engine).spin();
@@ -86,13 +79,18 @@ public class WashingMachineTest {
                                                    .withProgram(Program.SHORT)
                                                    .withSpin(false)
                                                    .build();
-        laundryBatch = LaundryBatch.builder()
-                                   .withWeightKg(5)
-                                   .withType(Material.COTTON)
-                                   .build();
         washingMachine.start(laundryBatch, programConfiguration);
 
         verify(engine, never()).spin();
+    }
+
+    @Test
+    public void testIfWaterPumpPourAndRelaseWasCalledOnce() {
+
+        washingMachine.start(laundryBatch, programConfiguration);
+
+        verify(waterPump).pour(any(Double.class));
+        verify(waterPump).release();
     }
 
     @Test
