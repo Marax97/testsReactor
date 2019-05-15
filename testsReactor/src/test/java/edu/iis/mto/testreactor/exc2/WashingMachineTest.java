@@ -130,21 +130,25 @@ public class WashingMachineTest {
                                                    .build();
 
         when(dirtDetector.detectDirtDegree(laundryBatch)).thenReturn(new Percentage(50));
-
         LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
 
         assertThat(laundryStatus.getRunnedProgram(), Matchers.equalTo(Program.LONG));
 
         when(dirtDetector.detectDirtDegree(laundryBatch)).thenReturn(new Percentage(20));
-
         laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
 
         assertThat(laundryStatus.getRunnedProgram(), Matchers.equalTo(Program.MEDIUM));
     }
 
     @Test
-    public void itCompiles() {
-        assertThat(true, Matchers.equalTo(true));
-    }
+    public void testIfLaundryWontStartIfIsTooHeavy() {
+        laundryBatch = LaundryBatch.builder()
+                                   .withWeightKg(10)
+                                   .withType(Material.COTTON)
+                                   .build();
 
+        washingMachine.start(laundryBatch, programConfiguration);
+
+        verify(engine, never()).spin();;
+    }
 }
