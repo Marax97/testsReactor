@@ -1,7 +1,9 @@
 package edu.iis.mto.testreactor.exc2;
 
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -53,6 +55,28 @@ public class WashingMachineTest {
         LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
 
         assertThat(laundryStatus.getResult(), Matchers.equalTo(Result.SUCCESS));
+    }
+
+    @Test
+    public void testIfEngineWasCalledOnce() {
+        laundryBatch = LaundryBatch.builder()
+                                   .withWeightKg(5)
+                                   .withType(Material.COTTON)
+                                   .build();
+        washingMachine.start(laundryBatch, programConfiguration);
+
+        verify(engine).runWashing(any(Integer.class));
+    }
+
+    @Test
+    public void testIfEngineWasCalledOnceForSpinMode() {
+        laundryBatch = LaundryBatch.builder()
+                                   .withWeightKg(5)
+                                   .withType(Material.COTTON)
+                                   .build();
+        washingMachine.start(laundryBatch, programConfiguration);
+
+        verify(engine).spin();
     }
 
     @Test
