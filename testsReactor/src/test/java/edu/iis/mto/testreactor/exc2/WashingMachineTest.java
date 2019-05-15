@@ -134,6 +134,12 @@ public class WashingMachineTest {
         LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
 
         assertThat(laundryStatus.getRunnedProgram(), Matchers.equalTo(Program.LONG));
+
+        when(dirtDetector.detectDirtDegree(laundryBatch)).thenReturn(new Percentage(20));
+
+        laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
+
+        assertThat(laundryStatus.getRunnedProgram(), Matchers.equalTo(Program.MEDIUM));
     }
 
     @Test
