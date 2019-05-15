@@ -71,6 +71,7 @@ public class WashingMachineTest {
         LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
 
         assertThat(laundryStatus.getResult(), Matchers.equalTo(Result.SUCCESS));
+        assertThat(laundryStatus.getRunnedProgram(), Matchers.equalTo(Program.SHORT));
     }
 
     @Test
@@ -119,6 +120,20 @@ public class WashingMachineTest {
         washingMachine.start(laundryBatch, programConfiguration);
 
         verify(dirtDetector).detectDirtDegree(laundryBatch);
+    }
+
+    @Test
+    public void testIfAutodetectProgramWillDetectProgramCorrectly() {
+        programConfiguration = ProgramConfiguration.builder()
+                                                   .withProgram(Program.AUTODETECT)
+                                                   .withSpin(true)
+                                                   .build();
+
+        when(dirtDetector.detectDirtDegree(laundryBatch)).thenReturn(new Percentage(50));
+
+        LaundryStatus laundryStatus = washingMachine.start(laundryBatch, programConfiguration);
+
+        assertThat(laundryStatus.getRunnedProgram(), Matchers.equalTo(Program.LONG));
     }
 
     @Test
