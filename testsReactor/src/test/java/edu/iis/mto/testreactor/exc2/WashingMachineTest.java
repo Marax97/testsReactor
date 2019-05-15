@@ -5,6 +5,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -104,6 +105,20 @@ public class WashingMachineTest {
 
         verify(waterPump).pour(any(Double.class));
         verify(waterPump).release();
+    }
+
+    @Test
+    public void testIfDirtDetectorWillBeCalledForAutodetectProgram() {
+        programConfiguration = ProgramConfiguration.builder()
+                                                   .withProgram(Program.AUTODETECT)
+                                                   .withSpin(true)
+                                                   .build();
+
+        when(dirtDetector.detectDirtDegree(laundryBatch)).thenReturn(new Percentage(50));
+
+        washingMachine.start(laundryBatch, programConfiguration);
+
+        verify(dirtDetector).detectDirtDegree(laundryBatch);
     }
 
     @Test
