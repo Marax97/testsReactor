@@ -3,6 +3,7 @@ package edu.iis.mto.testreactor.exc2;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import org.hamcrest.Matchers;
@@ -77,6 +78,21 @@ public class WashingMachineTest {
         washingMachine.start(laundryBatch, programConfiguration);
 
         verify(engine).spin();
+    }
+
+    @Test
+    public void testIfEngineSpinWontBeCalled() {
+        programConfiguration = ProgramConfiguration.builder()
+                                                   .withProgram(Program.SHORT)
+                                                   .withSpin(false)
+                                                   .build();
+        laundryBatch = LaundryBatch.builder()
+                                   .withWeightKg(5)
+                                   .withType(Material.COTTON)
+                                   .build();
+        washingMachine.start(laundryBatch, programConfiguration);
+
+        verify(engine, never()).spin();
     }
 
     @Test
